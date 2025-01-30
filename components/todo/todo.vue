@@ -1,12 +1,19 @@
 <script setup>
 import { ref } from  "vue";
-const name = ref('');
+const ary = [
+  { id: 1, name: "りんご" },
+  { id: 2, name: "みかん" },
+  { id: 3, name: "ぶどう" }
+]
+const num = 15;
 </script>
 
 <template>
   <div>
-    <label for="name">名前:</label>
-    <input type="text" name="name" id="" v-model="name">
-    {{ name }}
+    <ul>
+      <li :key="aryList.id" v-for="aryList in ary">{{ aryList.name }}</li>
+    </ul>
+    <p v-if="number < 10">数字は10より小さい</p>
+    <p v-else>数字は10より大きい</p>
   </div>
 </template>
