@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="todo-container">
-      <Todo />
+      <Todo text="hoges" />
     </div>
   </div>
 </template> 
