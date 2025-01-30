@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 
-const newTodo = ref('')
-const todos = ref([])
+const newTodo = ref('') // 新しいメモを書く場所
+const todos = ref([]) // メモを保管する場所
 
 const todoStorage = {
   STORAGE_KEY: 'todos-vuejs-demo',
@@ -34,22 +34,21 @@ onMounted(() => {
 const addTodo = () => {
   if (newTodo.value.trim()) {
     const todo = {
-      id: todos.value.length, // TODOのID
-      text: newTodo.value, // TODOの内容
-      completed: false // 完了フラグ
+      id: todos.value.length,
+      comment: newTodo.value,
+      state: '作業中'
     }
     todos.value.push(todo)
     todoStorage.save(todos.value)
-    newTodo.value = '' // 入力フィールドをクリア
+    newTodo.value = ''
   }
 }
 </script>
 
 <template>
   <div class="todo-wrapper">
-    <h2>TODO個別の内容が入る</h2>
+    <h2>TODOリスト</h2>
     
-    <!-- テスト用の入力フォーム -->
     <div class="todo-input">
       <input 
         v-model="newTodo"
@@ -60,16 +59,60 @@ const addTodo = () => {
       <button @click="addTodo">追加</button>
     </div>
 
-    <!-- 保存されているTODOの表示 -->
-    <div class="todo-list">
-      <ul>
-        <li v-for="todo in todos" :key="todo.id">
-          {{ todo.text }}
-        </li>
-      </ul>
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>コメント</th>
+          <th>状態</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in todos" :key="item.id">
+          <th>{{ item.id }}</th>
+          <td>{{ item.comment }}</td>
+          <td class="state">
+            <button>{{ item.state }}</button>
+          </td>
+          <td class="button">
+            <button>削除</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <style scoped>
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th, td {
+  padding: 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.state, .button {
+  text-align: center;
+}
+
+button {
+  padding: 0.25rem 0.5rem;
+}
+
+.todo-input {
+  margin: 1rem 0;
+  display: flex;
+  gap: 0.5rem;
+}
+
+input {
+  padding: 0.5rem;
+  flex-grow: 1;
+}
 </style>
