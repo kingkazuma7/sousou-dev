@@ -1,19 +1,15 @@
 <script setup>
 import { ref } from  "vue";
-const ary = [
-  { id: 1, name: "りんご" },
-  { id: 2, name: "みかん" },
-  { id: 3, name: "ぶどう" }
-]
-const num = 15;
+
+const emit = defineEmits(['sendMessage']); // emit可能なイベント名sendMessageを定義
+const sendMessageToParent = () => {
+  // console.log(newMessage);
+  emit('sendMessage', '子で書き換えた!'); // イベント発火させる
+}
 </script>
 
 <template>
-  <div>
-    <ul>
-      <li :key="aryList.id" v-for="aryList in ary">{{ aryList.name }}</li>
-    </ul>
-    <p v-if="number < 10">数字は10より小さい</p>
-    <p v-else>数字は10より大きい</p>
+  <div style="border: 1px solid blue;"> <!-- 子要素に青色ボーダーを追加 -->
+    <button @click="sendMessageToParent">親へ</button>
   </div>
 </template>
