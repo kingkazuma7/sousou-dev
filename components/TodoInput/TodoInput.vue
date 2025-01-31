@@ -2,6 +2,7 @@
 import { ref } from  "vue";
 import { statuses } from "../../src/const/status";
 
+const emit = defineEmits(['add-todo']);
 const input = ref("");
 const inputDate = ref("");
 const isErrMsg = ref(false); // エラーメッセージ用のフラグ
@@ -30,6 +31,8 @@ const onSubmitForm = (e) => {
   items.push(newItem); // 新タスクデータ追加
   const updateItems = JSON.stringify(items);
   localStorage.setItem("items", updateItems) // 新タスクデータ追加したリストをローカルストレージに保存
+
+  emit('add-todo', newItem);  // 親コンポーネントに通知
 }
 
 </script>

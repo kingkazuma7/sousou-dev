@@ -1,15 +1,10 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-
-const items = ref([]);  // 最初は空の配列
-
-// ブラウザで動いているときだけ実行する
-onMounted(() => {
-  // 保存されたデータを取得してitemsに保存する
-  const savedData = JSON.parse(localStorage.getItem('items')) || [];
-  items.value = savedData; // 取得したデータをitems.valueに保存
-})
-
+const props = defineProps({
+  items: {
+    type: Array,
+    required: true
+  }
+});
 </script>
 
 <template>
