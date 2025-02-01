@@ -25,10 +25,31 @@ const onEdit = (id) => {
   items.value[id].onEdit = true;
   // console.log(items.value[id].onEdit = true);
 }
+
+let isErrMsg = ref(false);
+const onUpdate = (id) => {
+  const newItem = {
+    id: id,
+    content: inputContent,
+    limit: inputLimit,
+    state: inputState,
+    onEdit: false,
+  }
+  
+  if (inputContent.value == "" || inputLimit.value == "") { // 空だったら
+    isErrMsg.value = true;
+    return;
+  }
+
+  items.value.splice(id, 1, newItem); // 入れ替えたいid番目、1つのアイテムを、newItemに。
+  localStorage.setItem("items", JSON.stringify(items.value)) // 更新されたリストで再保存
+  isErrMsg.value = false; // 更新完了したらfalseに戻す
+}
 </script>
 
 <template>
   <div>
+    <p v-if="isErrMsg">タスク・期限を両方入力してください</p>
     <table>
       <thead>
         <tr>
@@ -54,7 +75,7 @@ const onEdit = (id) => {
           </td>
           <td>
             <span v-if="!item.onEdit">{{ item.state.value }}</span>
-            <select v-model="inputState">
+            <select v-else v-model="inputState">
               <option
                 v-for="state in statuses"
                 :key="state.id"
@@ -64,8 +85,12 @@ const onEdit = (id) => {
               </option>
             </select>
           </td>
-          <td><button @click="onEdit(item.id)">編集</button></td>
+          <td>
+            <button v-if="!item.onEdit" @click="onEdit(item.id)">編集</button>
+            <button v-else @click="onUpdate(item.id)">完了</button>
+          </td>
           <td><button>削除</button></td>
+          {{!item.onEdit}}
         </tr>
       </tbody>
     </table>
