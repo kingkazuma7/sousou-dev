@@ -16,10 +16,7 @@ const isLocalStorageAvailable = typeof localStorage !== 'undefined';
 let items = ref(JSON.parse((isLocalStorageAvailable && localStorage.getItem("items"))) || []);
 let editingId = ref(null); // 編集中idを取得
 let isErrMsg = ref(false);
-let isShowmodal = ref(false);
-let deleteItemId = null; // 削除対象のインデックス
 
-// ---------------- 編集
 const onEdit = (id) => {
   const item = items.value[id];
   editingId.value = id;
@@ -29,7 +26,6 @@ const onEdit = (id) => {
   };
 }
 
-// ---------------- 完了
 const onUpdate = (id) => {
   if (!editingId.value) return;
 
@@ -52,34 +48,11 @@ const onUpdate = (id) => {
   editingId.value = null; // 編集中の状態を解除
   isErrMsg.value = false; // 更新完了したらfalseに戻す
 }
-
-// ---------------- 削除
-const showDeleteModal = (index) => {
-  isShowmodal.value = true;
-  deleteItemId = index; // インデックスを保存
-}
-const onDeleteItem = () => {
-  isShowmodal.value = false;
-  items.value.splice(deleteItemId, 1);
-  localStorage.setItem("items", JSON.stringify(items.value)); // localStorageを更新
-}
-const onHideModal = () => {
-  isShowmodal.value = false;
-}
 </script>
 
 <template>
   <div>
-    <!-- エラー -->
     <p class="error-message" v-if="isErrMsg">タスク・期限を両方入力してください</p>
-    <!-- モーダル -->
-    <div class="modal" v-if="isShowmodal">
-      <div class="modal-content">
-        <p>削除しても良いですか</p>
-        <button @click="onDeleteItem()">はい</button>
-        <button @click="onHideModal()">いいえ</button>
-      </div>
-    </div>
     <table>
       <thead>
         <tr>
@@ -116,10 +89,10 @@ const onHideModal = () => {
             </select>
           </td>
           <td>
-            <button v-if="!item.onEdit" @click="onEdit(index)">編集</button>
-            <button v-else @click="onUpdate(index)">完了</button>
+            <button v-if="!item.onEdit" @click="onEdit(item.id)">編集</button>
+            <button v-else @click="onUpdate(item.id)">完了</button>
           </td>
-          <td><button @click="showDeleteModal(index)">削除</button></td>
+          <td><button>削除</button></td>
         </tr>
       </tbody>
     </table>
@@ -132,26 +105,5 @@ const onHideModal = () => {
   color: red;
   font-weight: bold;
   margin: 0.5rem 0;
-}
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  max-width: 400px;
-  width: 100%;
-  text-align: center;
 }
 </style>
