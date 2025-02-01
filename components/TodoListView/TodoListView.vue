@@ -90,7 +90,6 @@ const onUpdate = (id) => {
             <button v-else @click="onUpdate(item.id)">完了</button>
           </td>
           <td><button>削除</button></td>
-          {{!item.onEdit}}
         </tr>
       </tbody>
     </table>
