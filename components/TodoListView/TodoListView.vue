@@ -8,6 +8,12 @@ const props = defineProps({
   }
 });
 
+const localItems = ref(props.items);
+
+watch(() => props.items, (newItem) => {
+  localItems.value = newItem;
+}, { deep: true })
+
 /**
  * localStorageがない時のケア
  * items反映されない..refがないから更新されない
@@ -30,10 +36,10 @@ const onUpdate = (id) => {
   if (!editingId.value) return;
 
   const newItem = {
-    ...items.value[id],
-    content: items.value[id].content,
-    limit: items.value[id].limit,
-    state: items.value[id].state,
+    ...localItems.value[id],
+    // content: items.value[id].content,
+    // limit: items.value[id].limit,
+    // state: items.value[id].state,
     onEdit: false,
   }
 
@@ -43,8 +49,9 @@ const onUpdate = (id) => {
     return;
   }
 
-  items.value.splice(id, 1, newItem); // 入れ替えたいid番目、1つのアイテムを、newItemに。
-  localStorage.setItem("items", JSON.stringify(items.value)) // 更新されたリストで再保存
+  localItems.value[id] = newItem;
+  // items.value.splice(id, 1, newItem); // 入れ替えたいid番目、1つのアイテムを、newItemに。
+  localStorage.setItem("items", JSON.stringify(localItems.value)) // 更新されたリストで再保存
   editingId.value = null; // 編集中の状態を解除
   isErrMsg.value = false; // 更新完了したらfalseに戻す
 }
@@ -65,7 +72,7 @@ const onUpdate = (id) => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in items" :key="item.id">
+        <tr v-for="(item, index) in localItems" :key="item.id">
           <td>{{ item.id }}</td>
           <td>
             <!-- 初期false, 反転で内容表示、trueの時だけinput表示 -->
@@ -89,8 +96,8 @@ const onUpdate = (id) => {
             </select>
           </td>
           <td>
-            <button v-if="!item.onEdit" @click="onEdit(item.id)">編集</button>
-            <button v-else @click="onUpdate(item.id)">完了</button>
+            <button v-if="!item.onEdit" @click="onEdit(index)">編集</button>
+            <button v-else @click="onUpdate(index)">完了</button>
           </td>
           <td><button>削除</button></td>
         </tr>

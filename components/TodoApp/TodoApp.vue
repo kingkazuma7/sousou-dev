@@ -15,7 +15,10 @@ onMounted(() => {
 // 新しいTODOを受け取って表示する関数
 const handleAddTodo = (newItem) => {
   items.value.push(newItem);
-
+  items.value = [...items.value]; // リアクティビティを確実
+  localStorage.setItem("items", JSON.stringify(items.value));
+  console.log("New item added:", newItem);
+  console.log("Updated items:", items.value);
 }
 </script>
 

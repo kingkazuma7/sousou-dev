@@ -19,7 +19,7 @@ const onSubmitForm = (e) => {
   // エラーがなければ、エラーメッセージを非表示に
   isErrMsg.value = false;
 
-  const items = JSON.parse(localStorage.getItem("items")) || [];
+  const items = JSON.parse(localStorage.getItem("items") || '[]');
   
   const newItem = {
     id: items.length,
@@ -28,11 +28,12 @@ const onSubmitForm = (e) => {
     state: statuses.NOT_START,
     onEdit: false, // 編集フラグ
   }
+  
+  emit('add-todo', newItem);  // 親コンポーネントに通知
+  
   items.push(newItem); // 新タスクデータ追加
   const updateItems = JSON.stringify(items);
   localStorage.setItem("items", updateItems) // 新タスクデータ追加したリストをローカルストレージに保存
-
-  emit('add-todo', newItem);  // 親コンポーネントに通知
 }
 
 </script>
