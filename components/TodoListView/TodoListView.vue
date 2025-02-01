@@ -14,35 +14,38 @@ const props = defineProps({
  */
 const isLocalStorageAvailable = typeof localStorage !== 'undefined';
 let items = ref(JSON.parse((isLocalStorageAvailable && localStorage.getItem("items"))) || []);
-  let inputContent = ref(); // 内容
-  let inputLimit = ref(); // 期限
-  let inputState = ref(); // ステータス
+let editingId = ref(null); // 編集中idを取得
+let isErrMsg = ref(false);
 
 const onEdit = (id) => {
-  inputContent.value = items.value[id].content;
-  inputLimit.value = items.value[id].limit;
-  inputState.value = items.value[id].state;
-  items.value[id].onEdit = true;
-  // console.log(items.value[id].onEdit = true);
+  const item = items.value[id];
+  editingId.value = id;
+  items.value[id] = {
+    ...item,
+    onEdit: true
+  };
 }
 
-let isErrMsg = ref(false);
 const onUpdate = (id) => {
+  if (!editingId.value) return;
+
   const newItem = {
-    id: id,
-    content: inputContent,
-    limit: inputLimit,
-    state: inputState,
+    ...items.value[id],
+    content: items.value[id].content,
+    limit: items.value[id].limit,
+    state: items.value[id].state,
     onEdit: false,
   }
-  
-  if (inputContent.value == "" || inputLimit.value == "") { // 空だったら
+
+  // 更新したnewItemリストが空だったら
+  if (newItem.content == "" || newItem.limit == "") {
     isErrMsg.value = true;
     return;
   }
 
   items.value.splice(id, 1, newItem); // 入れ替えたいid番目、1つのアイテムを、newItemに。
   localStorage.setItem("items", JSON.stringify(items.value)) // 更新されたリストで再保存
+  editingId.value = null; // 編集中の状態を解除
   isErrMsg.value = false; // 更新完了したらfalseに戻す
 }
 </script>
@@ -67,15 +70,15 @@ const onUpdate = (id) => {
           <td>
             <!-- 初期false, 反転で内容表示、trueの時だけinput表示 -->
             <span v-if="!item.onEdit">{{ item.content }}</span> 
-            <input v-else type="text" v-model="inputContent">
+            <input v-else type="text" v-model="item.content">
           </td>
           <td>
             <span v-if="!item.onEdit">{{ item.limit }}</span>
-            <input v-else type="date" v-model="inputLimit">
+            <input v-else type="date" v-model="item.limit">
           </td>
           <td>
             <span v-if="!item.onEdit">{{ item.state.value }}</span>
-            <select v-else v-model="inputState">
+            <select v-else v-model="item.state">
               <option
                 v-for="state in statuses"
                 :key="state.id"
