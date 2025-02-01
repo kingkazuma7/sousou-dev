@@ -49,7 +49,7 @@ const onUpdate = (id) => {
 
 <template>
   <div>
-    <p v-if="isErrMsg">タスク・期限を両方入力してください</p>
+    <p class="error-message" v-if="isErrMsg">タスク・期限を両方入力してください</p>
     <table>
       <thead>
         <tr>
@@ -98,4 +98,10 @@ const onUpdate = (id) => {
 </template>
 
 <style scoped>
+/* エラーメッセージ用のスタイル */
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin: 0.5rem 0;
+}
 </style>

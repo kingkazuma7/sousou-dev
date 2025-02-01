@@ -61,7 +61,7 @@ const onSubmitForm = (e) => {
 /* エラーメッセージ用のスタイル */
 .error-message {
   color: red;
-  font-weight: bold;  /* 太字 */
-  margin: 0.5rem 0;  /* 上下の余白 */
+  font-weight: bold;
+  margin: 0.5rem 0;
 }
 </style>
